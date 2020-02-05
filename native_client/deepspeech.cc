@@ -363,7 +363,7 @@ DS_CreateStream(ModelState* aCtx,
                            aCtx->beam_width_,
                            cutoff_prob,
                            cutoff_top_n,
-                           aCtx->scorer_.get());
+                           aCtx->scorer_);
 
   *retval = ctx.release();
   return DS_ERR_OK;
