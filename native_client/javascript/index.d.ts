@@ -103,7 +103,7 @@ stt(aBuffer: object): string;
  * @return :js:func:`Metadata` object containing multiple candidate transcripts. Each transcript has per-token metadata including timing information.
  * The user is responsible for freeing Metadata by calling :js:func:`FreeMetadata`. Returns undefined on error.
  */
-sttWithMetadata(aBuffer: object, aNumResults: number): Metadata;
+sttWithMetadata(aBuffer: object, aNumResults?: number): Metadata;
 
 /**
  * Create a new streaming inference state. One can then call :js:func:`Stream.feedAudioContent` and :js:func:`Stream.finishStream` on the returned stream object.
@@ -112,7 +112,7 @@ sttWithMetadata(aBuffer: object, aNumResults: number): Metadata;
  *
  * @throws on error
  */
-createStream(): object;
+createStream(): Stream;
 }
 
 /**
@@ -127,14 +127,14 @@ declare class Stream {
  * @param aBuffer An array of 16-bit, mono raw audio samples at the
  *                 appropriate sample rate (matching what the model was trained on).
  */
-feedAudioContent(aBuffer: object): void;
+feedAudioContent(aBuffer: Buffer): void;
 
 /**
  * Compute the intermediate decoding of an ongoing streaming inference.
  *
  * @return The STT intermediate result.
  */
-intermediateDecode(aSctx: object): string;
+intermediateDecode(aSctx: Stream): string;
 
 /**
  * Compute the intermediate decoding of an ongoing streaming inference, return results including metadata.
@@ -143,7 +143,7 @@ intermediateDecode(aSctx: object): string;
  *
  * @return :js:func:`Metadata` object containing multiple candidate transcripts. Each transcript has per-token metadata including timing information. The user is responsible for freeing Metadata by calling :js:func:`FreeMetadata`. Returns undefined on error.
  */
-intermediateDecodeWithMetadata (aNumResults: number): Metadata;
+intermediateDecodeWithMetadata (aNumResults?: number): Metadata;
 
 /**
  * Compute the final decoding of an ongoing streaming inference and return the result. Signals the end of an ongoing streaming inference.
@@ -163,7 +163,7 @@ finishStream(): string;
  *
  * This method will free the stream, it must not be used after this method is called.
  */
-finishStreamWithMetadata(aNumResults: number): Metadata;
+finishStreamWithMetadata(aNumResults?: number): Metadata;
 }
 
 /**
@@ -177,7 +177,7 @@ export function FreeModel(model: Model): void;
 /**
  * Free memory allocated for metadata information.
  *
- * @param metadata Object containing metadata as returned by :js:func:`Model.sttWithMetadata` or :js:func:`Model.finishStreamWithMetadata`
+ * @param metadata Object containing metadata as returned by :js:func:`Model.sttWithMetadata` or :js:func:`Stream.finishStreamWithMetadata`
  */
 export function FreeMetadata(metadata: Metadata): void;
 
@@ -188,7 +188,7 @@ export function FreeMetadata(metadata: Metadata): void;
  *
  * @param stream A streaming state pointer returned by :js:func:`Model.createStream`.
  */
-export function FreeStream(stream: object): void;
+export function FreeStream(stream: Stream): void;
 
 /**
  * Print version of this library and of the linked TensorFlow library on standard output.

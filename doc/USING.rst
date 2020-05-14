@@ -1,16 +1,19 @@
+.. _usage-docs:
+
 Using a Pre-trained Model
 =========================
 
 Inference using a DeepSpeech pre-trained model can be done with a client/language binding package. We have four clients/language bindings in this repository, listed below, and also a few community-maintained clients/language bindings in other repositories, listed `further down in this README <#third-party-bindings>`_.
 
-
-* `The Python package/language binding <#using-the-python-package>`_
-* `The Node.JS package/language binding <#using-the-nodejs-package>`_
-* `The Command-Line client <#using-the-command-line-client>`_
+* `The C API <c-usage>`.
+* :ref:`The Python package/language binding <py-usage>`
+* :ref:`The Node.JS package/language binding <nodejs-usage>`
+* :ref:`The command-line client <cli-usage>`
 * :github:`The .NET client/language binding <native_client/dotnet/README.rst>`
 
-Running ``deepspeech`` might, see below, require some runtime dependencies to be already installed on your system:
+.. _runtime-deps:
 
+Running ``deepspeech`` might, see below, require some runtime dependencies to be already installed on your system:
 
 * ``sox`` - The Python and Node.JS clients use SoX to resample files to 16kHz.
 * ``libgomp1`` - libsox (statically linked into the clients) depends on OpenMP. Some people have had to install this manually.
@@ -20,6 +23,8 @@ Running ``deepspeech`` might, see below, require some runtime dependencies to be
 
 Please refer to your system's documentation on how to install these dependencies.
 
+.. _cuda-deps:
+
 CUDA dependency
 ^^^^^^^^^^^^^^^
 
@@ -28,17 +33,19 @@ The GPU capable builds (Python, NodeJS, C++, etc) depend on the same CUDA runtim
 Getting the pre-trained model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you want to use the pre-trained English model for performing speech-to-text, you can download it (along with other important inference material) from the DeepSpeech `releases page <https://github.com/mozilla/DeepSpeech/releases>`_. Alternatively, you can run the following command to download and unzip the model files in your current directory:
+If you want to use the pre-trained English model for performing speech-to-text, you can download it (along with other important inference material) from the DeepSpeech `releases page <https://github.com/mozilla/DeepSpeech/releases>`_. Alternatively, you can run the following command to download the model files in your current directory:
 
 .. code-block:: bash
 
-   wget https://github.com/mozilla/DeepSpeech/releases/download/v0.6.1/deepspeech-0.6.1-models.tar.gz
-   tar xvfz deepspeech-0.6.1-models.tar.gz
+   wget https://github.com/mozilla/DeepSpeech/releases/download/v0.7.0/deepspeech-0.7.0-models.pbmm
+   wget https://github.com/mozilla/DeepSpeech/releases/download/v0.7.0/deepspeech-0.7.0-models.scorer
 
 Model compatibility
 ^^^^^^^^^^^^^^^^^^^
 
 DeepSpeech models are versioned to keep you from trying to use an incompatible graph with a newer client after a breaking change was made to the code. If you get an error saying your model file version is too old for the client, you should either upgrade to a newer model release, re-export your model from the checkpoint using a newer version of the code, or downgrade your client if you need to use the old model and can't re-export it.
+
+.. _py-usage:
 
 Using the Python package
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -106,11 +113,13 @@ Note: the following command assumes you `downloaded the pre-trained model <#gett
 
 .. code-block:: bash
 
-   deepspeech --model models/output_graph.pbmm --scorer models/kenlm.scorer --audio my_audio_file.wav
+   deepspeech --model deepspeech-0.7.0-models.pbmm --scorer deepspeech-0.7.0-models.scorer --audio my_audio_file.wav
 
 The ``--scorer`` argument is optional, and represents an external language model to be used when transcribing the audio.
 
-See :github:`client.py <native_client/python/client.py>` for an example of how to use the package programatically.
+See :ref:`the Python client <py-api-example>` for an example of how to use the package programatically.
+
+.. _nodejs-usage:
 
 Using the Node.JS / Electron.JS package
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -135,9 +144,11 @@ Alternatively, if you're using Linux and have a supported NVIDIA GPU, you can in
 
 See the `release notes <https://github.com/mozilla/DeepSpeech/releases>`_ to find which GPUs are supported. Please ensure you have the required `CUDA dependency <#cuda-dependency>`_.
 
-See :github:`client.ts <native_client/javascript/client.ts>` for an example of how to use the bindings.
+See the :ref:`TypeScript client <js-api-example>` for an example of how to use the bindings programatically.
 
-Using the Command-Line client
+.. _cli-usage:
+
+Using the command-line client
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To download the pre-built binaries for the ``deepspeech`` command-line (compiled C++) client, use ``util/taskcluster.py``\ :
@@ -166,14 +177,14 @@ Note: the following command assumes you `downloaded the pre-trained model <#gett
 
 .. code-block:: bash
 
-   ./deepspeech --model models/output_graph.pbmm --scorer models/kenlm.scorer --audio audio_input.wav
+   ./deepspeech --model deepspeech-0.7.0-models.pbmm --scorer deepspeech-0.7.0-models.scorer --audio audio_input.wav
 
-See the help output with ``./deepspeech -h`` and the :github:`native client README <native_client/README.rst>` for more details.
+See the help output with ``./deepspeech -h`` for more details.
 
 Installing bindings from source
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If pre-built binaries aren't available for your system, you'll need to install them from scratch. Follow these :github:`native client installation instructions <native_client/README.rst>`.
+If pre-built binaries aren't available for your system, you'll need to install them from scratch. Follow the :github:`native client build and installation instructions <native_client/README.rst>`.
 
 Third party bindings
 ^^^^^^^^^^^^^^^^^^^^
