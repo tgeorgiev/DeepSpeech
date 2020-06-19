@@ -31,7 +31,8 @@ RUN git lfs install
 RUN git clone $DEEPSPEECH_REPO
 
 WORKDIR /DeepSpeech
-RUN git checkout $DEEPSPEECH_SHA
+# Checkout branch or commit and discard changes done afterwards (if not using master branch)
+RUN git checkout $DEEPSPEECH_SHA && git reset --hard
 
 # Build CTC decoder first, to avoid clashes on incompatible versions upgrades
 RUN cd native_client/ctcdecode && make NUM_PROCESSES=$(nproc) bindings
