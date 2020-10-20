@@ -27,11 +27,12 @@ RUN apt-get purge -y python3-xdg
 RUN apt-get install -y --no-install-recommends libopus0 libsndfile1
 
 WORKDIR /
-RUN git lfs install
-RUN git clone $DEEPSPEECH_REPO
+RUN wget https://github.com/mozilla/DeepSpeech/archive/${DEEPSPEECH_SHA}.zip && \
+    unzip ${DEEPSPEECH_SHA}.zip && \
+    mv DeepSpeech-${DEEPSPEECH_SHA} DeepSpeech && \
+    rm -rf ${DEEPSPEECH_SHA}.zip
 
 WORKDIR /DeepSpeech
-RUN git checkout $DEEPSPEECH_SHA
 
 ## Build CTC decoder first, to avoid clashes on incompatible versions upgrades
 #RUN cd native_client/ctcdecode && make NUM_PROCESSES=$(nproc) bindings
